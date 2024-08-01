@@ -1,5 +1,4 @@
 import requests
-from requests_toolbelt.utils import dump
 from dotenv import load_dotenv
 import os
 
@@ -30,13 +29,8 @@ class Connexion:
     def post(self, endpoint, data=None):
         url = f"{self.base_url}/{endpoint}"
         
-        p_r = requests.Request('POST', url, headers=self.headers, json=data).prepare()
-        self.print_request(p_r)
-
-        with requests.Session() as session:
-            response = session.send(p_r)
-
         response = requests.post(url, headers=self.headers, json=data)
+
         return self._handle_response(response)
 
     def put(self, endpoint, data=None):
