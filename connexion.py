@@ -9,7 +9,9 @@ class Connexion:
     status_code_exceptions = {
         499: CooldownNotReady,
         498: CharacterNotFoundError,
-        486: CharacterLocked
+        486: CharacterLocked,
+        502: ServerUnavailable,
+        503: ServerUnavailable
     }
 
     def __init__(self, base_url = None, token = None):

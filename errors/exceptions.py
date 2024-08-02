@@ -19,3 +19,10 @@ class CharacterLocked(Exception):
     
     def __str__(self):
         "The character is locked"
+
+class ServerUnavailable(Exception):
+    def __init__(self):
+        super().init("The server is currently unavailable")
+    
+    def __str__(self):
+        "The server is currently unavailable"

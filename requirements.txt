@@ -2,3 +2,4 @@ tqdm==4.64.1
 dpath
 python-dotenv
 requests
+requests-mock
