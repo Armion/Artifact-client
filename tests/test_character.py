@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from character import Character
+from character.character import Character
 from connexion import Connexion
 from errors.exceptions import *
 import requests

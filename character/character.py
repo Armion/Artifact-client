@@ -1,6 +1,8 @@
 from connexion import Connexion
 from errors.exceptions import CharacterNotFoundError
 from map import Map
+from items.inventory import Inventory
+
 import dpath.util
 from time import sleep
 from tqdm import tqdm
@@ -26,6 +28,7 @@ class Character:
         try:
             response = self.connexion.get(f"characters/{self.character_name}")
             self.data = dpath.util.get(response, 'data')
+            self.inventory = Inventory(self.data)
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 404:
                 raise CharacterNotFoundError(self.character_name)
