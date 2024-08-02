@@ -27,11 +27,11 @@ class Map:
         with open('data/map.json', 'w', encoding= 'utf-8') as file:
             json.dump(self.data, file, indent=4)
 
-    def find_monsters(self, name):
+    def find_object(self, name):
         return [map for map in self.data['data'] if map['content'] is not None and map['content'].get('code') == name]
 
-    def find_nearest_monster(self, pos_x, pos_y, name):
-        return self.nearest_map(pos_x, pos_y, self.find_monsters(name))
+    def find_nearest_object(self, pos_x, pos_y, name):
+        return self.nearest_map(pos_x, pos_y, self.find_object(name))
 
     def nearest_map(self, pos_x, pos_y, maps):
         nearest = None

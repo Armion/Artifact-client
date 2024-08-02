@@ -1,10 +1,17 @@
 import requests
 from dotenv import load_dotenv
 import os
+from errors.exceptions import *
 
 load_dotenv()
 
 class Connexion:
+    status_code_exceptions = {
+        499: CooldownNotReady,
+        498: CharacterNotFoundError,
+        486: CharacterLocked
+    }
+
     def __init__(self, base_url = None, token = None):
         self.base_url = base_url or os.getenv('BASE_URL', 'https://api.artifactsmmo.com')
         self.token = token or os.getenv('TOKEN', None)
@@ -44,7 +51,12 @@ class Connexion:
         return self._handle_response(response)
 
     def _handle_response(self, response):
-        if response.status_code >= 200 and response.status_code < 300:
+        if 200 <= response.status_code < 300:
             return response.json()
+        elif response.status_code in self.status_code_exceptions:
+            exception_class = self.status_code_exceptions[response.status_code]
+            if exception_class == CharacterNotFoundError:
+                raise exception_class(f"Character '{self.token}' not found.")
+            raise exception_class()
         else:
             response.raise_for_status()

@@ -1,8 +1,10 @@
 from connexion import Connexion
+from errors.exceptions import CharacterNotFoundError
 from map import Map
 import dpath.util
 from time import sleep
 from tqdm import tqdm
+import requests
 
 class Character:
     def __init__(self, character_name):
@@ -21,7 +23,14 @@ class Character:
         self.update_data()
 
     def get_data(self):
-        self.data = dpath.util.get(self.connexion.get(f"characters/{self.character_name}"), 'data')
+        try:
+            response = self.connexion.get(f"characters/{self.character_name}")
+            self.data = dpath.util.get(response, 'data')
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 404:
+                raise CharacterNotFoundError(self.character_name)
+            else:
+                raise e
 
     def update_data(self, fetch = True):
         if fetch == True:
@@ -62,16 +71,16 @@ class Character:
 
         self.get_data()
 
-    def farm_chicken(self):
-        print("Moving to the nearest chickens spot !")
-        self.travel_to_nearest_monster('chicken')
+    def farm_monster(self, name='chicken'):
+        print(f"Moving to the nearest {name} spot !")
+        self.travel_to_nearest_object(name)
 
         while(True):
             self.fight()
 
-    def travel_to_nearest_monster(self, name, online = False):
+    def travel_to_nearest_object(self, name, online = False):
         map = Map('online') if online else Map('offline')
-        nearest = map.find_nearest_monster(self.pos_x, self.pos_y, name)
+        nearest = map.find_nearest_object(self.pos_x, self.pos_y, name)
         self.wait_for_cd()
 
         if self.pos_x == nearest['x'] and self.pos_y == nearest['y']:
