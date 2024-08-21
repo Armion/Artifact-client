@@ -9,6 +9,7 @@ class Connexion:
     status_code_exceptions = {
         499: CooldownNotReady,
         498: CharacterNotFoundError,
+        497: InventoryFull,
         486: CharacterLocked,
         502: ServerUnavailable,
         503: ServerUnavailable
