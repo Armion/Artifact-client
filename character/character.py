@@ -1,5 +1,6 @@
 from connexion import Connexion
 from errors.exceptions import CharacterNotFoundError
+from tools.colors import print_color, Color
 from map import Map
 from items.inventory import Inventory
 
@@ -9,6 +10,14 @@ from tqdm import tqdm
 import requests
 
 class Character:
+    BLUE = '\033[94m'
+    RED = '\033[91m'
+    YELLOW = '\033[93m'
+    GREEN = '\033[92m'
+    WHITE = '\033[97m'
+    BLACK = '\033[97m'
+    RESET = '\033[0m'
+
     def __init__(self, character_name):
         self.character_name = character_name
         self.connexion = Connexion()
@@ -58,12 +67,15 @@ class Character:
         if verbose == True:
             self.display_character()
 
-    def display_character(self):
-        print(f" lvl : {self.lvl}")
-        print(f"hp : {self.hp}")
-        print(f"xp to next lvl: {self.needed_xp}")
+    def display_character(self, verbose = False):
+        print_color(f"lvl : {self.lvl}", Color.BLUE)
+        print_color(f"hp : {self.hp}", Color.RED)
+        print_color(f"xp to next lvl: {self.needed_xp}", Color.BLUE)
         print(f"coordinates x: {self.pos_x} y: {self.pos_y}")
-        print(f"gold : {self.gold}")
+        print_color(f"gold : {self.gold}", Color.YELLOW)
+
+        if(verbose):
+            self.inventory.display()
 
     def wait_for_cd(self):
         total_time = float(self.cooldown) + 0.5
