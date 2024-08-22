@@ -19,6 +19,7 @@ class Character:
         self.update_data()
 
     def move(self, x: int, y: int) -> None:
+        self.wait_for_cd()
         self.connexion.post(
             f"my/{self.character_name}/action/move",
                 {
@@ -56,6 +57,12 @@ class Character:
         )
         self.pos_x = self.data['x']
         self.pos_y = self.data['y']
+
+    def gather(self):
+        self.wait_for_cd()
+        print("Starting gathering")
+        self.data = dpath.util.get(self.connexion.post(f"my/{self.character_name}/action/gathering"), 'data/character')
+        self.update_data(False)
 
     def fight(self, verbose: bool = True) -> None:
         self.wait_for_cd()

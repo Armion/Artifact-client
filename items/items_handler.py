@@ -1,5 +1,4 @@
 from tools.data_handler import DataHandler
-from items.item import Item
 
 class ItemsHandler(DataHandler):
     def __init__(self, source="offline"):
@@ -8,8 +7,8 @@ class ItemsHandler(DataHandler):
         else:
             self.online_load('items')
     
-    def find_item(self, code: str) -> Item:
-        for item in self.data['data']:
-            if item['code'] is not None and item.get('code') == code:
-                return Item(item)
+    def find_item(self, code: str, item_factory):
+        for item_data in self.data['data']:
+            if item_data['code'] is not None and item_data.get('code') == code:
+                return item_factory(item_data)
         return None
