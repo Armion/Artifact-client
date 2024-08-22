@@ -1,31 +1,14 @@
 import json
 import math
 from connexion import Connexion
+from tools.data_handler import DataHandler
 
-class Map:
+class Map(DataHandler):
     def __init__(self, source = "offline"):
         if source == "offline":
-            self.offline_load()
+            self.offline_load('data/map.json')
         else:
-            self.online_load()
-    
-    def offline_load(self):
-        with open('data/map.json', 'r') as file:
-            self.data = json.load(file)
-    
-    def online_load(self):
-        self.connexion = Connexion()
-
-        self.data = self.connexion.get('maps', { 'page' : 1, 'size': 100 })
-
-        for i in range(2, self.data['pages'] + 1):
-            self.data['data'].extend(
-                self.connexion.get('maps', { 'page' : i, 'size': 100 })['data']
-            )
-
-    def save_data(self):
-        with open('data/map.json', 'w', encoding= 'utf-8') as file:
-            json.dump(self.data, file, indent=4)
+            self.online_load('maps')
 
     def find_object(self, name):
         return [map for map in self.data['data'] if map['content'] is not None and map['content'].get('code') == name]

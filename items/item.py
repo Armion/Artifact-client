@@ -1,15 +1,14 @@
-from tools.colors import apply_color, Color
+from items.recipe import Recipe
+
 class Item:
-    def __init__(self, data = None):
+    def __init__(self, data: dict = None):
         if data is not None :
             self.load_from_data(data)
-
+    
     def load_from_data(self, data):
-        self.name = data['code']
-        self.slot = data['slot']
-        self.quantity = data['quantity']
-
-    def display(self):
-        if(self.quantity <= 0):
-            return None 
-        return apply_color(f"Slot: {self.slot}, Item: {self.name}, Quantity: {self.quantity}", Color.GREEN)
+        self.code = data.get('code')
+        self.name = data.get('name')
+        self.lvl = data.get('level')
+        self.type = data.get('type')
+        self.subtype = data.get('subtype')
+        self.recipe = Recipe(data.get('craft'))
