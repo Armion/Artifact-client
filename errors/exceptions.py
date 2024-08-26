@@ -8,28 +8,28 @@ class CharacterNotFoundError(Exception):
 
 class CooldownNotReady(Exception):
     def __init__(self):
-        super().init("The cooldown is still in progress")
+        super().__init__("The cooldown is still in progress")
     
     def __str__(self):
         "The cooldown is still in progress"
 
 class CharacterLocked(Exception):
     def __init__(self):
-        super().init("The character is locked")
+        super().__init__("The character is locked")
     
     def __str__(self):
         "The character is locked"
 
 class InventoryFull(Exception):
     def __init__(self):
-        super().init("The inventory is full !")
+        super().__init__("The inventory is full !")
     
     def __str__(self):
         "The inventory is full !"
 
 class ServerUnavailable(Exception):
     def __init__(self):
-        super().init("The server is currently unavailable")
+        super().__init__("The server is currently unavailable")
     
     def __str__(self):
         "The server is currently unavailable"
