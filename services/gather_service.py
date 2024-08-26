@@ -5,22 +5,18 @@ from tools.server import Server
 
 import dpath
 
-class FightService(Waitable):
+class GatherService(Waitable):
     def __init__(self, model: CharacterModel) -> None:
         self.model = model
         self.connexion = Connexion()
         self.server = Server()
 
-    def fight(self, verbose: bool = True) -> None:
+    def gather(self):
         self.wait_for_cd()
-        print("starting the fight !")
+        print("Starting gathering")
 
         self.model.update_data(
-            dpath.get(
-                self.connexion.post(
-                    f"my/{self.model.character_name}/action/fight"), 'data/character'
-                )
+            dpath.util.get(
+                self.connexion.post(f"my/{self.model.character_name}/action/gathering"), 'data/character'
+            )
         )
-
-        if verbose == True:
-            self.model.display_character()
