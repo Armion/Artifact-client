@@ -15,7 +15,7 @@ class CharacterModel:
 
     def update_data(self, data: dict = None) -> None:
 
-        if data is None:
+        if data is None or data == {}:
             self.get_data()
         else:
             self.data = data

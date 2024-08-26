@@ -14,14 +14,15 @@ class Character:
         self.connexion = Connexion()
         self.server = Server()
         self.model.update_data()
+        self.move_service = MoveService(self.model)
 
     def move(self, x: int, y: int) -> None:
-        self.wait_for_cd()
-        MoveService(self.character_name).move_character(x, y)
+        self.move_service.wait_for_cd()
+        self.move_service.move_character(x, y)
         self.model.update_data()
 
     def gather(self):
-        self.wait_for_cd()
+        self.move_service.wait_for_cd()
         print("Starting gathering")
 
         self.model.update_data(
@@ -31,7 +32,7 @@ class Character:
         )
 
     def fight(self, verbose: bool = True) -> None:
-        self.wait_for_cd()
+        self.move_service.wait_for_cd()
         print("starting the fight !")
 
         self.model.update_data(
@@ -60,15 +61,15 @@ class Character:
 
     def farm_monster(self, name: str ='chicken') -> None:
         print(f"Moving to the nearest {name} spot !")
-        self.travel_to_nearest_object(name)
+        self.move_service.travel_to_nearest_object(name)
 
         while(True):
             self.fight()
 
     def sell_object(self, code: str, quantity: int = 1) -> None:
-        self.travel_to_nearest_object('grand_exchange')
+        self.move_service.travel_to_nearest_object('grand_exchange')
         self.connexion.post(
-            f"my/{self.character_name}/action/ge/sell",
+            f"my/{self.model.character_name}/action/ge/sell",
             {
                 "code": code,
                 "quantity": quantity,
@@ -76,20 +77,5 @@ class Character:
             }
         )
 
-        return None
-
-
-
-    def travel_to_nearest_object(self, name: str, online: bool = False) -> None:
-        map = Map('online') if online else Map('offline')
-        nearest = map.find_nearest_object(self.model.pos_x, self.model.pos_y, name)
-
-        if self.model.pos_x == nearest['x'] and self.model.pos_y == nearest['y']:
-            print("You are already there !")
-            self.model.update_data()
-            return None
-        else:
-            self.wait_for_cd()
-            self.move(nearest['x'], nearest['y'])
         return None
 
