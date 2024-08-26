@@ -1,4 +1,5 @@
 from items.recipe import Recipe
+from items.grand_exchange import GrandExchange
 
 class Item:
     def __init__(self, data: dict = None, item_factory = None):
@@ -14,3 +15,8 @@ class Item:
         self.subtype = data.get('subtype')
         if data.get('craft'):
             self.recipe = Recipe(data.get('craft'), self.__class__)
+
+    def get_sell_price(self) -> float:
+        self.sell_price = GrandExchange().find_item(self.code).sell_price
+
+        return self.sell_price

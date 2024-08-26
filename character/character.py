@@ -84,7 +84,7 @@ class Character:
             print(f"coordinates x: {self.pos_x} y: {self.pos_y}")
 
     def wait_for_cd(self) -> None:
-        remaining_seconds = (self.cooldown_expiration - self.server.get_server_current_time()).total_seconds() + 0.5
+        remaining_seconds = (self.cooldown_expiration - self.server.get_server_current_time()).total_seconds() + 0.6
 
         if (remaining_seconds <= 0):
             print("No CD to wait for !")
@@ -103,6 +103,19 @@ class Character:
 
         while(True):
             self.fight()
+
+    def sell_object(self, code: str, quantity: int = 1) -> None:
+        self.travel_to_nearest_object('grand_exchange')
+        self.connexion.post(
+            f"my/{self.character_name}/action/ge/sell",
+            {
+                "code": code,
+                "quantity": quantity,
+                "price": self.inventory.find_item(code).get_sell_price()
+            }
+        )
+
+
 
     def travel_to_nearest_object(self, name: str, online: bool = False) -> None:
         map = Map('online') if online else Map('offline')

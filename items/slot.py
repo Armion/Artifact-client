@@ -1,4 +1,6 @@
+import items
 from tools.colors import apply_color, Color
+from items.item import Item
 
 class Slot:
     def __init__(self, data = None):
@@ -9,6 +11,7 @@ class Slot:
         self.name = data.get('code')
         self.slot = data.get('slot')
         self.quantity = data.get('quantity')
+        self.item = Item(data, items.item_factory)
 
     def display(self):
         if(self.quantity <= 0):

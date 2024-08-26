@@ -13,6 +13,13 @@ class Inventory:
             self.slots.append(Slot(slot))
         
         self.items_amount = sum(slot.quantity for slot in self.slots)
+
+    def find_item(self, code: str):
+        for slot in self.slots:
+            if slot.item.code == code:
+                return slot.item
+        
+        return None
     
     def display(self):
         inventory_info = f"Inventory (Max Size: {self.size}, Current Items: {self.items_amount}):"
