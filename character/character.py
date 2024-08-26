@@ -1,24 +1,19 @@
-from connexion import Connexion
-from tools.server import Server
 from character.character_model import CharacterModel
 
 from services.move_service import MoveService
 from services.fight_service import FightService
 from services.gather_service import GatherService
+from services.exchange_service import ExchangeService
 
-import dpath
-from time import sleep
-from tqdm import tqdm
 
 class Character:
     def __init__(self, character_name):
         self.model = CharacterModel(character_name)
-        self.connexion = Connexion()
-        self.server = Server()
         self.model.update_data()
         self.move_service = MoveService(self.model)
         self.fight_service = FightService(self.model)
         self.gather_service = GatherService(self.model)
+        self.exchange_service = ExchangeService(self.model)
 
     def move(self, x: int, y: int) -> None:
         self.move_service.wait_for_cd()
@@ -37,14 +32,6 @@ class Character:
 
     def sell_object(self, code: str, quantity: int = 1) -> None:
         self.move_service.travel_to_nearest_object('grand_exchange')
-        self.connexion.post(
-            f"my/{self.model.character_name}/action/ge/sell",
-            {
-                "code": code,
-                "quantity": quantity,
-                "price": self.inventory.find_item(code).get_sell_price()
-            }
-        )
+        self.exchange_service.sell_object(code, quantity)
 
         return None
-
