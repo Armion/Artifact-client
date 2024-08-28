@@ -15,6 +15,13 @@ class Item:
         self.subtype = data.get('subtype')
         if data.get('craft'):
             self.recipe = Recipe(data.get('craft'), self.__class__)
+        else:
+            self.recipe = None
+
+    def has_recipe(self) -> bool:
+        if self.recipe is not None:
+            return True
+        return False
 
     def get_sell_price(self) -> float:
         self.sell_price = GrandExchange().find_item(self.code).sell_price

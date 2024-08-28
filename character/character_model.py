@@ -45,6 +45,15 @@ class CharacterModel:
             else:
                 raise e
     
+    def has_item(self, item_code: str, amount: int = 1) -> bool:
+        return self.inventory.has_item(item_code, amount)
+    
+    def missing_item(self, item_code: str, amount: int = 1) -> int:
+        return self.inventory.missing_item(item_code, amount)
+    
+    def find_item(self, item_code: str):
+        return self.inventory.find_item(item_code)
+
     def display_character(self, verbose: bool = False) -> None:
         print_color(f"lvl : {self.lvl}", Color.BLUE)
         print_color(f"hp : {self.hp}", Color.RED)

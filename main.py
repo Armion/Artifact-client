@@ -1,4 +1,6 @@
 from character.character import Character
 
 armion = Character('Armion')
-armion.farm_monster('chicken')
+missing_items = {}
+print(armion.can_craft('sticky_sword', 1, missing_items))
+print(missing_items)
