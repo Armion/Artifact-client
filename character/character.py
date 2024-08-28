@@ -31,8 +31,16 @@ class Character:
     def craft(self, item_code: str) -> None:
         self.craft_service.craft(item_code)
 
-    def can_craft(self, item_code: str, amount: int = 1, missing_items: list = []) -> bool:
-        return self.craft_service.is_craftable(item_code, amount, missing_items)
+    def can_craft(self, item_code: str, amount: int = 1, missing_requirements: dict = None) -> dict:
+        if not missing_requirements:
+            missing_requirements = {'components': {}, 'skills': {}}
+
+        result = {
+            'craftable': self.craft_service.is_craftable(item_code, amount, missing_requirements),
+            'missing_requirements': missing_requirements
+        }
+
+        return result
 
     def farm_monster(self, name: str ='chicken') -> None:
         print(f"Moving to the nearest {name} spot !")

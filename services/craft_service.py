@@ -21,13 +21,17 @@ class CraftService(Waitable):
             dpath.util.get(self.__query_craft(item_code))
         )
 
-    def is_craftable(self,item_code: str, amount: int = 1, missing_items: dict = {}) -> bool:
+    def is_craftable(self,item_code: str, amount: int = 1, missing_items: dict = None) -> bool:
+        if not missing_items:
+            missing_items = {'components': {}, 'skills': {}}
         ih = ItemsHandler()
         item = ih.find_item(item_code, item_factory)
         result = True
 
+        self.__add_missing_skill(missing_items.get('skills'), item)
+
         if not item.has_recipe():
-            self.__add_missing_items(missing_items, item.code, amount)
+            self.__add_missing_items(missing_items.get('components'), item.code, amount)
             return False
         
         for component in item.recipe.components:
@@ -42,7 +46,7 @@ class CraftService(Waitable):
             result = self.is_craftable(component.code, required_amount, missing_items) and False
         else:
             result = False
-            self.__add_missing_items(missing_items, component.code, required_amount)
+            self.__add_missing_items(missing_items.get('components'), component.code, required_amount)
         return result
     
     def __add_missing_items(self, missing_items, item_code, amount) -> None:
@@ -51,6 +55,13 @@ class CraftService(Waitable):
         else:
             missing_items[item_code] = amount
         
+        return None
+    
+    def __add_missing_skill(self, missing_skill, item):
+        craft_lvl = self.model.skill(item.recipe.skill).get('lvl')
+        if craft_lvl < item.recipe.lvl:
+            missing_skill[item.recipe.skill] = max(missing_skill.get(item.recipe.skill) or 1, item.recipe.lvl)
+
         return None
 
     def __query_craft(self, item_code):

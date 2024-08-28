@@ -1,5 +1,6 @@
 from items.inventory import Inventory
 from tools.colors import print_color, Color
+from character.skills import Skills
 
 from datetime import datetime
 import requests
@@ -33,6 +34,7 @@ class CharacterModel:
         )
         self.pos_x = self.data['x']
         self.pos_y = self.data['y']
+        self.skills = Skills(self.data)
 
     def get_data(self) -> None:
         try:
@@ -53,6 +55,9 @@ class CharacterModel:
     
     def find_item(self, item_code: str):
         return self.inventory.find_item(item_code)
+    
+    def skill(self, skill_name):
+        return self.skills.get_skill(skill_name)
 
     def display_character(self, verbose: bool = False) -> None:
         print_color(f"lvl : {self.lvl}", Color.BLUE)
