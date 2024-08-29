@@ -13,12 +13,25 @@ class CraftService(Waitable):
         self.connexion = Connexion()
         self.server = Server()
 
-    def craft(self, item_code: str) -> None:
+
+    def crafting_skill(self, item_code: str) -> str:
+        ih = ItemsHandler()
+        item = ih.find_item(item_code, item_factory)
+
+        return item.recipe.skill
+
+    def craft(self, item_code: str, amount: int = 1) -> None:
+        data = {'components': {}, 'skills': {}}
+        
+        if not self.is_craftable(item_code, amount, data):
+            print(f"impossible to craft the item. missing requirements: {data}")
+            return None
+        
         self.wait_for_cd()
         print("Starting crafting")
 
         self.model.update_data(
-            dpath.util.get(self.__query_craft(item_code))
+            dpath.util.get(self.__query_craft(item_code, amount), 'data/character')
         )
 
     def is_craftable(self,item_code: str, amount: int = 1, missing_items: dict = None) -> bool:
@@ -64,14 +77,14 @@ class CraftService(Waitable):
 
         return None
 
-    def __query_craft(self, item_code):
-        self.connexion.post(
+    def __query_craft(self, item_code: str, amount: int = 1) -> None:
+        return self.connexion.post(
                     f"my/{self.model.character_name}/action/crafting",
-                    self.__query_body(item_code)
-                ), 'data/character'
+                    self.__query_body(item_code, amount)
+                )
 
-    def __query_body(self, item_code: str) -> dict:
+    def __query_body(self, item_code: str, amount: str = 1) -> dict:
         return {
             'code': item_code,
-            'quantity': 1
+            'quantity': amount
         }

@@ -28,7 +28,9 @@ class Character:
     def gather(self):
         self.gather_service.gather()
 
-    def craft(self, item_code: str) -> None:
+    def craft(self, item_code: str, amount: int = 1) -> None:
+        data = self.can_craft(item_code, amount)
+        self.move_service.travel_to_nearest_object(data.get('skill'))
         self.craft_service.craft(item_code)
 
     def can_craft(self, item_code: str, amount: int = 1, missing_requirements: dict = None) -> dict:
@@ -37,6 +39,7 @@ class Character:
 
         result = {
             'craftable': self.craft_service.is_craftable(item_code, amount, missing_requirements),
+            'skill': self.craft_service.crafting_skill(item_code),
             'missing_requirements': missing_requirements
         }
 
